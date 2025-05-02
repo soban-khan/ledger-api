@@ -38,12 +38,12 @@ cd ledger-api
 2. Install dependencies:
 
 ```bash
-npm install
+yarn install
 ```
 
 3. Set up environment variables:
 
-The project includes a `.env` file with default development settings. For production, create your own `.env` file with appropriate values.
+The project includes a `.env` file. Create your own `.env` file with appropriate values.
 
 ### Running the Application
 
