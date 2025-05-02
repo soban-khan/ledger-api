@@ -31,7 +31,7 @@ This API provides a simple ledger system for tracking financial transactions usi
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/soban-khan/ledger-api.git
 cd ledger-api
 ```
 
@@ -66,73 +66,6 @@ npm run start:prod
 
 The API will be available at: http://localhost:3000
 
-## API Documentation
-
-### Endpoints
-
-#### Accounts
-
-- **GET /accounts** - List all accounts
-- **POST /accounts** - Create a new account
-- **GET /accounts/:id** - Get account details
-- **GET /accounts/:id/balance** - Get account balance
-
-#### Transactions
-
-- **POST /transactions** - Create a new transaction
-- **GET /transactions** - List transactions (with optional filters)
-- **GET /transactions/:id** - Get transaction details
-
-### Example Requests
-
-#### Create an Account
-
-```http
-POST /accounts
-Content-Type: application/json
-
-{
-  "name": "Cash",
-  "type": "ASSET"
-}
-```
-
-#### Create a Transaction
-
-```http
-POST /transactions
-Content-Type: application/json
-
-{
-  "description": "Purchase office supplies",
-  "transactionDate": "2025-05-01",
-  "entries": [
-    {
-      "accountId": "account-id-for-expenses",
-      "amount": 5000,
-      "type": "DEBIT"
-    },
-    {
-      "accountId": "account-id-for-cash",
-      "amount": 5000,
-      "type": "CREDIT"
-    }
-  ]
-}
-```
-
-#### Get Account Balance
-
-```http
-GET /accounts/account-id/balance
-```
-
-#### List Transactions with Filters
-
-```http
-GET /transactions?accountId=account-id&startDate=2025-01-01&endDate=2025-05-01
-```
-
 ## Database Schema
 
 ### Entities
@@ -142,59 +75,40 @@ GET /transactions?accountId=account-id&startDate=2025-01-01&endDate=2025-05-01
   - id (UUID)
   - name
   - type (ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE)
-  - timestamps
 
 - **Transaction**: Represents a financial event
 
   - id (UUID)
-  - description
-  - transactionDate
-  - timestamps
+  - narration
+  - reference_no
+  - date
 
 - **Entry**: Component of a transaction
   - id (UUID)
-  - transactionId (Foreign Key -> Transaction)
-  - accountId (Foreign Key -> Account)
+  - transaction_id (Foreign Key -> Transaction)
+  - account_id (Foreign Key -> Account)
   - amount (stored as integer cents)
   - type (DEBIT, CREDIT)
-  - timestamps
 
 ## Design Decisions and Trade-offs
 
 ### Data Storage
 
-- **Integer for Currency**: Amounts are stored as integers (cents) to avoid floating-point precision issues with financial calculations.
+- **Integer for Currency**: Amounts are stored as integers (cents) to avoid floating-point calculation issues.
 - **UUID Primary Keys**: Used for better distribution and security compared to sequential IDs.
 
 ### Business Logic
 
 - **Transaction Validation**: All transactions must have at least two entries with balanced debits and credits.
 - **Account Types**: The five standard accounting categories are supported (Asset, Liability, Equity, Revenue, Expense).
-- **Balance Calculation**: Account balances are calculated on-demand based on all entries affecting the account.
 
 ### API Design
 
 - **Consistent Error Handling**: Global exception filter ensures consistent error responses.
 - **Input Validation**: Comprehensive validation using class-validator.
-- **Filters**: Transaction listing supports filtering by account and date range.
+- **Filters**: Transaction listing supports filtering.
 
 ### Trade-offs
 
-- **On-demand Balance Calculation**: For simplicity, account balances are calculated on demand instead of maintaining a running balance. This approach is simpler but less efficient for accounts with many transactions.
 - **Single Currency**: The system assumes a single currency for all transactions.
 - **Synchronize ORM**: For ease of development, TypeORM's synchronize is enabled. In production, this should be disabled in favor of migrations.
-
-## Testing
-
-Run the test suite:
-
-```bash
-# Unit tests
-npm run test
-
-# E2E tests
-npm run test:e2e
-
-# Test coverage
-npm run test:cov
-```
