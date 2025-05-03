@@ -6,7 +6,7 @@ A simple financial ledger API built with NestJS, TypeScript, and PostgreSQL, fol
 
 This API provides a simple ledger system for tracking financial transactions using double-entry accounting principles. It allows you to:
 
-- Create accounts (Asset, Liability, Equity, Revenue, Expense)
+- Create accounts with supported types (Asset, Liability, Equity, Revenue, Expense)
 - Record transactions with balanced debits and credits
 - Query account balances
 - Retrieve transaction history with filtering options
@@ -45,6 +45,20 @@ yarn install
 
 The project includes a `.env` file. Create your own `.env` file with appropriate values.
 
+```bash
+PORT = 3000
+
+PSQL_HOST=localhost
+PSQL_PORT=5432
+PSQL_USERNAME=username
+PSQL_PASSWORD=password
+PSQL_DATABASE=database
+PSQL_SYNCHRONIZE = true
+
+JWT_AUTHSECRET = authentication_secret
+JWT_EXPIRY = 8h
+```
+
 ### Running the Application
 
 1. Start the PostgreSQL database using Docker:
@@ -57,38 +71,26 @@ docker-compose up -d
 
 ```bash
 # Development mode with hot reload
-npm run start:dev
+yarn run start:dev
 
 # Production mode
-npm run build
-npm run start:prod
+yarn run build
+yarn run start:prod
+
+The API will be available at: http://localhost:3000 by default
 ```
 
-The API will be available at: http://localhost:3000
+3. API Documentation
+
+```bash
+The API documentation (Swagger) will be available at: http://localhost:3000/docs by default
+```
 
 ## Database Schema
 
-### Entities
-
-- **Account**: Represents a ledger account
-
-  - id (UUID)
-  - name
-  - type (ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE)
-
-- **Transaction**: Represents a financial event
-
-  - id (UUID)
-  - narration
-  - reference_no
-  - date
-
-- **Entry**: Component of a transaction
-  - id (UUID)
-  - transaction_id (Foreign Key -> Transaction)
-  - account_id (Foreign Key -> Account)
-  - amount (stored as integer cents)
-  - type (DEBIT, CREDIT)
+```bash
+Refer to the ER Diagram (pdf file present in repo)
+```
 
 ## Design Decisions and Trade-offs
 
@@ -96,9 +98,6 @@ The API will be available at: http://localhost:3000
 
 - **Integer for Currency**: Amounts are stored as integers (cents) to avoid floating-point calculation issues.
 - **UUID Primary Keys**: Used for better distribution and security compared to sequential IDs.
-
-### Business Logic
-
 - **Transaction Validation**: All transactions must have at least two entries with balanced debits and credits.
 - **Account Types**: The five standard accounting categories are supported (Asset, Liability, Equity, Revenue, Expense).
 
