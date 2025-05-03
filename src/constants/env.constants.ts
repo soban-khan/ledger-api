@@ -4,16 +4,17 @@ config({ path: '.env' });
 
 function getEnvVariable(name: string) {
   const envVar = process.env[name];
-  if (!envVar)
+  if (!envVar) {
     throw new HttpException(
       `No Such Env:${name} variable`,
       HttpStatus.FAILED_DEPENDENCY,
     );
+  }
   return envVar;
 }
 
 export const ENV = {
-  PORT: getEnvVariable('PORT'),
+  PORT: process.env['PORT'] ?? 3000,
   PSQL: {
     HOST: getEnvVariable('PSQL_HOST'),
     PORT: parseInt(getEnvVariable('PSQL_PORT')),
