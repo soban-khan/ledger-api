@@ -22,8 +22,8 @@ export const ENV = {
     DATABASE: getEnvVariable('PSQL_DATABASE'),
     SYNCHRONIZE: getEnvVariable('PSQL_SYNCHRONIZE') === 'true' ? true : false,
   },
-  //   JWT: {
-  //     EXPIRY: getEnvVariable('JWT_EXPIRY'),
-  //     SECRET: getEnvVariable('JWT_AUTHSECRET'),
-  //   },
+  JWT: {
+    EXPIRY: getEnvVariable('JWT_EXPIRY'),
+    SECRET: getEnvVariable('JWT_AUTHSECRET'),
+  },
 };

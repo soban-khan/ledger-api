@@ -18,10 +18,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  // app.enableCors({
-  //   origin: ['http://localhost:3000'],
-  //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  // });
   app.setGlobalPrefix('api/v1/');
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new ResponseInterceptor());
