@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity } from 'typeorm';
+import { Entry } from 'src/modules/entries/entities/entry.entity';
+import { BaseEntity, Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Transaction extends BaseEntity {
@@ -6,8 +7,11 @@ export class Transaction extends BaseEntity {
   narration: string;
 
   @Column({ type: 'string', nullable: false })
-  reference_no: string;
+  referenceNo: string;
 
   @Column({ type: 'date', nullable: false })
   date: Date;
+
+  @OneToMany(() => Entry, (entry) => entry.transaction)
+  entries: Entry[];
 }

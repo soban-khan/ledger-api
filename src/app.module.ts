@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TYPEORM_CONFIG } from './configs/typeorm.config';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { EntriesModule } from './modules/entries/entries.module';
 // import { JwtModule, JwtService } from '@nestjs/jwt';
 // import { APP_GUARD } from '@nestjs/core';
 // import { AuthenticationGuard } from './guards/authentication.guards';
@@ -13,6 +14,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
     TypeOrmModule.forRoot(TYPEORM_CONFIG),
     AccountsModule,
     TransactionsModule,
+    EntriesModule,
   ],
   controllers: [AppController],
   providers: [

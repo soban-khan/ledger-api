@@ -7,3 +7,8 @@ export enum ACCOUNT_TYPES {
   REVENUE = 'Revenue',
   EXPENSE = 'Expense',
 }
+
+export enum ENTRY_TYPES {
+  DEBIT = 'debit',
+  CREDIT = 'credit',
+}
