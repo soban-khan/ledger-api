@@ -1,26 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEntryDto } from './dto/create-entry.dto';
-import { UpdateEntryDto } from './dto/update-entry.dto';
+import { ENTRY_TYPES } from 'src/constants/app.constants';
 
 @Injectable()
 export class EntriesService {
-  create(createEntryDto: CreateEntryDto) {
-    return 'This action adds a new entry';
-  }
+  validateEntries(
+    entries: Array<{ amount: number; type: ENTRY_TYPES }>,
+  ): boolean {
+    let totalDebits = 0;
+    let totalCredits = 0;
 
-  findAll() {
-    return `This action returns all entries`;
-  }
+    for (const entry of entries) {
+      if (entry.type === ENTRY_TYPES.DEBIT) {
+        totalDebits += entry.amount;
+      } else if (entry.type === ENTRY_TYPES.CREDIT) {
+        totalCredits += entry.amount;
+      }
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} entry`;
-  }
-
-  update(id: number, updateEntryDto: UpdateEntryDto) {
-    return `This action updates a #${id} entry`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} entry`;
+    return totalDebits === totalCredits;
   }
 }
