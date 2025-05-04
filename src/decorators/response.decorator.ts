@@ -4,7 +4,7 @@ import { ApiResponse } from '@nestjs/swagger';
 export function ResponseFormat() {
   return applyDecorators(
     ApiResponse({
-      status: 500,
+      status: '5XX',
       description: 'Server failed to process request',
       schema: {
         example: {
@@ -15,7 +15,7 @@ export function ResponseFormat() {
       },
     }),
     ApiResponse({
-      status: 400,
+      status: '4XX',
       description: 'Issue from client end',
       schema: {
         example: {

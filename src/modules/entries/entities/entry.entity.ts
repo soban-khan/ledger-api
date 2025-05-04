@@ -2,7 +2,7 @@ import { ENTRY_TYPES } from 'src/constants/app.constants';
 import { Account } from 'src/modules/accounts/entities/account.entity';
 import { Transaction } from 'src/modules/transactions/entities/transaction.entity';
 import { BaseEntity } from 'src/universal/base.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Entry extends BaseEntity {
@@ -17,8 +17,12 @@ export class Entry extends BaseEntity {
   type: ENTRY_TYPES;
 
   @ManyToOne(() => Account, (account) => account.entries)
+  @JoinColumn({ name: 'account_id' })
   account: Account;
 
-  @ManyToOne(() => Transaction, (transaction) => transaction.entries)
+  @ManyToOne(() => Transaction, (transaction) => transaction.entries, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'transaction_id' })
   transaction: Transaction;
 }

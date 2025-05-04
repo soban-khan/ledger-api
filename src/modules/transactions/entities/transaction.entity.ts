@@ -7,12 +7,15 @@ export class Transaction extends BaseEntity {
   @Column({ type: 'varchar', length: '500' })
   narration: string;
 
-  @Column({ type: 'varchar', nullable: false, length: '20' })
+  @Column({ type: 'varchar', nullable: false, length: '200' })
   referenceNo: string;
 
   @Column({ type: 'date', nullable: false })
   date: Date;
 
-  @OneToMany(() => Entry, (entry) => entry.transaction)
+  @OneToMany(() => Entry, (entry) => entry.transaction, {
+    cascade: true,
+    eager: true,
+  })
   entries: Entry[];
 }
