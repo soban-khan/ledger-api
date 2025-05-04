@@ -4,12 +4,16 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from './entities/account.entity';
+import { Entry } from '../entries/entities/entry.entity';
+import { ENTRY_TYPES } from 'src/constants/app.constants';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    @InjectRepository(Entry)
+    private entryRepository: Repository<Entry>,
   ) {}
 
   async create(createAccountDto: CreateAccountDto): Promise<object> {
@@ -109,5 +113,35 @@ export class AccountsService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
     }
+  }
+
+  async getBalance(id: string) {
+    const account = await this.findOne(id);
+    const entries = await this.entryRepository.find({
+      where: { account: { id: id } },
+    });
+
+    let balance = 0;
+    for (const entry of entries) {
+      // debit and credit depend on the account type
+      const isDebitPositive = ['ASSET', 'EXPENSE'].includes(entry.type);
+
+      if (entry.type === ENTRY_TYPES.DEBIT) {
+        balance += isDebitPositive ? entry.amount : -entry.amount;
+      } else {
+        balance += isDebitPositive ? -entry.amount : entry.amount;
+      }
+    }
+
+    const formattedBalance = (balance / 100).toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
+    return {
+      ...account,
+      balance,
+      formattedBalance,
+    };
   }
 }

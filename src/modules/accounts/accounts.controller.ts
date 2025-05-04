@@ -61,6 +61,7 @@ export class AccountsController {
   }
 
   @Patch(':id')
+  @ResponseFormat()
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAccountDto: UpdateAccountDto,
@@ -69,7 +70,22 @@ export class AccountsController {
   }
 
   @Delete(':id')
+  @ResponseFormat()
   remove(@Param('id', ParseUUIDPipe) id: string): object {
     return this.accountsService.remove(id);
+  }
+
+  @Get(':id/balance')
+  @ApiResponse({
+    status: 200,
+    example: {
+      isSuccess: true,
+      error: '',
+      data: {},
+    },
+  })
+  @ResponseFormat()
+  getBalance(@Param('id') id: string) {
+    return this.accountsService.getBalance(id);
   }
 }
