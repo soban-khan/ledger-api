@@ -1,14 +1,47 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
-  create(@Body() createAccountDto: CreateAccountDto) {
+  @ApiResponse({
+    status: 201,
+    example: {
+      isSuccess: true,
+      error: '',
+      data: {},
+    },
+  })
+  @ApiResponse({
+    status: '5XX',
+    example: {
+      isSuccess: false,
+      error: 'error_message (server failed to process request)',
+      data: {},
+    },
+  })
+  @ApiResponse({
+    status: '4XX',
+    example: {
+      isSuccess: false,
+      error: 'error_message (issue from client end)',
+      data: {},
+    },
+  })
+  create(@Body() createAccountDto: CreateAccountDto): object {
     return this.accountsService.create(createAccountDto);
   }
 

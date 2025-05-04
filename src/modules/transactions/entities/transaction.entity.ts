@@ -1,12 +1,13 @@
 import { Entry } from 'src/modules/entries/entities/entry.entity';
-import { BaseEntity, Column, Entity, OneToMany } from 'typeorm';
+import { BaseEntity } from 'src/universal/base.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Transaction extends BaseEntity {
-  @Column({ type: 'string' })
+  @Column({ type: 'varchar', length: '500' })
   narration: string;
 
-  @Column({ type: 'string', nullable: false })
+  @Column({ type: 'varchar', nullable: false, length: '20' })
   referenceNo: string;
 
   @Column({ type: 'date', nullable: false })

@@ -1,7 +1,8 @@
 import { ENTRY_TYPES } from 'src/constants/app.constants';
 import { Account } from 'src/modules/accounts/entities/account.entity';
 import { Transaction } from 'src/modules/transactions/entities/transaction.entity';
-import { BaseEntity, Column, Entity, ManyToOne } from 'typeorm';
+import { BaseEntity } from 'src/universal/base.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Entry extends BaseEntity {

@@ -5,7 +5,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Account extends BaseEntity {
-  @Column({ type: 'string', nullable: false })
+  @Column({ type: 'varchar', nullable: false, length: 255 })
   name: string;
 
   @Column({

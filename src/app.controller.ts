@@ -7,7 +7,13 @@ export class AppController {
   constructor() {}
 
   @Get('health')
-  getHello(): string {
-    return 'Healthy!';
+  getHello(): object {
+    const uptime = process.uptime();
+    const { heapTotal, heapUsed } = process.memoryUsage();
+    return {
+      uptime: `${uptime} sec`,
+      heapTotal: `${heapTotal} bytes`,
+      heapUsed: `${heapUsed} bytes`,
+    };
   }
 }
