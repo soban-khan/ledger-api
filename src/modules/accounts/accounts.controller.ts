@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { ResponseFormat } from 'src/decorators/response.decorator';
 
 @Controller('accounts')
 export class AccountsController {
@@ -25,43 +27,49 @@ export class AccountsController {
       data: {},
     },
   })
-  @ApiResponse({
-    status: '5XX',
-    example: {
-      isSuccess: false,
-      error: 'error_message (server failed to process request)',
-      data: {},
-    },
-  })
-  @ApiResponse({
-    status: '4XX',
-    example: {
-      isSuccess: false,
-      error: 'error_message (issue from client end)',
-      data: {},
-    },
-  })
+  @ResponseFormat()
   create(@Body() createAccountDto: CreateAccountDto): object {
     return this.accountsService.create(createAccountDto);
   }
 
   @Get()
-  findAll() {
+  @ApiResponse({
+    status: 200,
+    example: {
+      isSuccess: true,
+      error: '',
+      data: {},
+    },
+  })
+  @ResponseFormat()
+  findAll(): Promise<{ results: Array<object>; totalCount: number }> {
     return this.accountsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountsService.findOne(+id);
+  @ApiResponse({
+    status: 200,
+    example: {
+      isSuccess: true,
+      error: '',
+      data: {},
+    },
+  })
+  @ResponseFormat()
+  findOne(@Param('id', ParseUUIDPipe) id: string): object {
+    return this.accountsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountsService.update(+id, updateAccountDto);
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAccountDto: UpdateAccountDto,
+  ): object {
+    return this.accountsService.update(id, updateAccountDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accountsService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string): object {
+    return this.accountsService.remove(id);
   }
 }

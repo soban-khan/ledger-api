@@ -14,8 +14,7 @@ export class AccountsService {
 
   async create(createAccountDto: CreateAccountDto): Promise<object> {
     try {
-      const account = this.accountRepository.create(createAccountDto);
-      await this.accountRepository.save(account);
+      await this.accountRepository.save(createAccountDto);
 
       return {};
     } catch (error) {
@@ -29,19 +28,86 @@ export class AccountsService {
     }
   }
 
-  findAll() {
-    return `This action returns all accounts`;
+  async findAll(): Promise<{ results: Array<object>; totalCount: number }> {
+    try {
+      const results = await this.accountRepository.findAndCount({
+        select: ['id', 'name', 'type'],
+        order: {
+          id: 'ASC',
+        },
+      });
+      return { results: results[0], totalCount: results[1] };
+    } catch (error) {
+      if (error.status)
+        throw new HttpException(error.message, error.getStatus());
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
+  async findOne(id: string): Promise<object> {
+    try {
+      const account = await this.accountRepository.findOne({
+        select: ['id', 'name', 'type'],
+        where: { id },
+      });
+      if (!account)
+        throw new HttpException('No Such Account', HttpStatus.NOT_FOUND);
+
+      return account;
+    } catch (error) {
+      if (error.status)
+        throw new HttpException(error.message, error.getStatus());
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+    }
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async update(
+    id: string,
+    updateAccountDto: UpdateAccountDto,
+  ): Promise<object> {
+    try {
+      const pageToUpdate = await this.accountRepository.findOne({
+        where: { id },
+      });
+      if (!pageToUpdate)
+        throw new HttpException('Account Not Exist', HttpStatus.NOT_FOUND);
+
+      await this.accountRepository.update(id, updateAccountDto);
+      return {};
+    } catch (error) {
+      if (error.status)
+        throw new HttpException(error.message, error.getStatus());
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: string): Promise<object> {
+    try {
+      const deletedAccount = await this.accountRepository.delete(id);
+      if (!deletedAccount.affected)
+        throw new HttpException('No Such Account', HttpStatus.NOT_FOUND);
+
+      return {};
+    } catch (error) {
+      if (error.status)
+        throw new HttpException(error.message, error.getStatus());
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+    }
   }
 }
