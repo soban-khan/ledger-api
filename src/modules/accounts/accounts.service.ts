@@ -78,10 +78,10 @@ export class AccountsService {
     updateAccountDto: UpdateAccountDto,
   ): Promise<object> {
     try {
-      const pageToUpdate = await this.accountRepository.findOne({
+      const accountToUpdate = await this.accountRepository.findOne({
         where: { id },
       });
-      if (!pageToUpdate)
+      if (!accountToUpdate)
         throw new HttpException('Account Not Exist', HttpStatus.NOT_FOUND);
 
       await this.accountRepository.update(id, updateAccountDto);
